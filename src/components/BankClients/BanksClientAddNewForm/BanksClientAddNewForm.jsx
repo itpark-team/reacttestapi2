@@ -1,41 +1,96 @@
 import React, {useState} from 'react';
+import {useForm} from "react-hook-form";
+import cl from "./BanksClientAddNewForm.module.css";
 
 const BanksClientAddNewForm = ({addNewBankClient}) => {
 
-    let [inputBankClient, setInputBankClient] = useState({
-        fio: "",
-        cardNumber: "",
-        money: 0
+    let {
+        register,
+        formState: {errors, isValid},
+        handleSubmit,
+        reset
+    } = useForm({
+        mode: "onChange"
     });
+
+
+    const onSubmit = (data) => {
+        let inputBankClient = {
+            fio: data.fio,
+            cardNumber: data.cardNumber,
+            money: data.money
+        };
+
+        addNewBankClient(inputBankClient);
+
+        reset();
+    }
 
     return (
         <div>
-            <p>
-                <b>ФИО:</b>
-                <input type="text"
-                       value={inputBankClient.fio}
-                       onChange={(event) => setInputBankClient({...inputBankClient, fio: event.target.value})}/>
-            </p>
+            <h2>Форма добавления нового клиента</h2>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className={cl.divMargin}>
+                    <b>ФИО:</b>
+                    <input type="text" {
+                        ...register("fio", {
+                            required: "Имя не может быть пустым",
+                            minLength: {
+                                value: 3,
+                                message: "Минимум 3 символа"
+                            },
+                            maxLength: {
+                                value: 32,
+                                message: "Максимум 32 символа"
+                            }
+                        })
+                    }
+                    />
+                    <div>{errors?.fio?.message}</div>
+                </div>
 
-            <p>
-                <b>Номер карты:</b>
-                <input type="text"
-                       value={inputBankClient.cardNumber}
-                       onChange={(event) => setInputBankClient({...inputBankClient, cardNumber: event.target.value})}/>
-            </p>
+                <div className={cl.divMargin}>
+                    <b>Номер карты:</b>
+                    <input type="number" {
+                        ...register("cardNumber", {
+                            required: "Номер карты не может быть пустым",
+                            minLength: {
+                                value: 16,
+                                message: "Необходимо 16 цифр"
+                            },
+                            maxLength: {
+                                value: 16,
+                                message: "Необходимо 16 цифр"
+                            }
+                        })
+                    }
+                    />
+                    <div>{errors?.cardNumber?.message}</div>
+                </div>
 
-            <p>
-                <b>Баланс:</b>
-                <input type="number"
-                       value={inputBankClient.money}
-                       onChange={(event) => setInputBankClient({
-                           ...inputBankClient,
-                           money: parseInt(event.target.value)
-                       })}/>
-            </p>
+                <div className={cl.divMargin}>
+                    <b>Баланс:</b>
+                    <input type="number"{
+                        ...register("money", {
+                            required: "Поле балан не может быть пустым",
+                            min: {
+                                value: 1,
+                                message: "Минимум 1"
+                            },
+                            max: {
+                                value: 100000,
+                                message: "Максимум 100000"
+                            }
+                        })
+                    }
+                    />
+                    <div>{errors?.cardNumber?.money}</div>
+                </div>
 
-            <button onClick={() => addNewBankClient(inputBankClient)}>Добавить нового клиента
-            </button>
+                <div className={cl.divMargin}>
+                    <input type="submit" value={"Добавить нового клиента"} disabled={!isValid}/>
+                </div>
+            </form>
         </div>
     );
 };
