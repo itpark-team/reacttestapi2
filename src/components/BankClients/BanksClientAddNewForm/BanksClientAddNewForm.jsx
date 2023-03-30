@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {useForm} from "react-hook-form";
 import cl from "./BanksClientAddNewForm.module.css";
+import BankClientsApiWorker from "../Api/Api";
 
-const BanksClientAddNewForm = ({addNewBankClient}) => {
+const BanksClientAddNewForm = () => {
 
     let {
         register,
@@ -12,7 +13,17 @@ const BanksClientAddNewForm = ({addNewBankClient}) => {
     } = useForm({
         mode: "onChange"
     });
+    let bankClientsApiWorker = new BankClientsApiWorker();
 
+    const addNewBankClient = (inputBankClient) => {
+        bankClientsApiWorker.addNewBankClient(inputBankClient)
+            .then(response => {
+                alert("клиент успешно добавлен");
+            })
+            .catch(error => {
+                console.log("addNewBankClient ERRRROR");
+            });
+    }
 
     const onSubmit = (data) => {
         let inputBankClient = {

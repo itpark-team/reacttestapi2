@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import BankClientsApiWorker from "../Api/Api";
 import BankClientsItem from "../BankClientsItem/BankClientsItem";
-import BanksClientAddNewForm from "../BanksClientAddNewForm/BanksClientAddNewForm";
 
 const BankClientsList = () => {
 
@@ -18,24 +17,13 @@ const BankClientsList = () => {
             });
     }
 
-    const addNewBankClient = (inputBankClient) => {
-        bankClientsApiWorker.addNewBankClient(inputBankClient)
-            .then(response => {
-                getAllBankClients();
-            })
-            .catch(error => {
-                console.log("addNewBankClient ERRRROR");
-            });
-    }
-
     useEffect(() => {
         getAllBankClients();
     }, []);
 
     return (
         <div>
-            <BanksClientAddNewForm addNewBankClient={addNewBankClient}/>
-
+            <h2>Список всех клиентов банка</h2>
             {
                 bankClients.length === 0
                     ? <div>Данных нет</div>
